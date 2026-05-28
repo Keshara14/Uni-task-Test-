@@ -1,0 +1,230 @@
+/* ========================================
+   UNITASK - Login Page CSS
+   Member 02: Amandi (Login Lead)
+   Elegant Theme
+   ======================================== */
+
+.login-wrapper {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    background: var(--background);
+}
+
+.login-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.login-left {
+    /* Path to your desired background image */
+    background-image: url('login left.png'); 
+    
+    /* Forces the image to completely fill the left container */
+    background-size: cover; 
+    
+    /* Centers the focus point of the image */
+    background-position: center; 
+    
+    /* Prevents tiling if the container stretches */
+    background-repeat: no-repeat; 
+    
+    /* Ensures a minimum height if the right-side form is tall */
+    min-height: 100%; 
+}
+
+.login-left h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+}
+
+.login-left h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.login-left p {
+    opacity: 0.85;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.testimonial {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.testimonial i {
+    font-size: 1.5rem;
+    opacity: 0.5;
+    margin-bottom: 0.5rem;
+}
+
+.testimonial p {
+    font-style: italic;
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
+.testimonial h6 {
+    margin-top: 0.5rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.testimonial small {
+    opacity: 0.8;
+    font-size: 0.8rem;
+}
+
+.login-right {
+    padding: 2.5rem;
+}
+
+.login-right h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+}
+
+.login-right .welcome-text {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.login-form {
+    margin-bottom: 1.5rem;
+}
+
+.login-form .form-group {
+    margin-bottom: 1.2rem;
+}
+
+.login-form label {
+    color: var(--dark-color);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.login-form input {
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    padding: 12px 15px;
+    background: var(--input-bg);
+    transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(44, 95, 124, 0.1);
+}
+
+.forgot-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+    color: var(--primary-dark);
+}
+
+.login-btn {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(44, 95, 124, 0.3);
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--text-muted);
+}
+
+.signup-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .login-left {
+        display: none;
+    }
+    
+    .login-right {
+        padding: 1.5rem;
+    }
+}
+}
+
+.testimonial h6 {
+    margin-top: 0.5rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.testimonial small {
+    opacity: 0.8;
+    font-size: 0.8rem;
+}
+
+.login-right {
+    padding: 2.5rem;
+}
+
+.login-right h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.login-right .welcome-text {
+    color: #7f8c8d;
+    margin-bottom: 1.5rem;
+}
+
+.forgot-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .login-left {
+        display: none;
+    }
+    
+    .login-right {
+        padding: 1.5rem;
+    }
+}
