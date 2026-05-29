@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - Student Planner{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='notifications.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="notifications-container">
+    <div class="page-header">
+        <div class="datetime-display-mobile">
+            <div class="time" id="current-time">00:00</div>
+            <div class="date" id="current-date">Loading...</div>
+        </div>
+        <div class="header-content">
+            <h1><i class="fas fa-bell"></i> Notifications & Alerts</h1>
+            <p>Stay on top of your deadlines and important events</p>
+        </div>
+        <div class="modern-datetime">
+            <div class="datetime-display">
+                <div class="time" id="current-time-desktop">00:00</div>
+                <div class="date" id="current-date-desktop">Loading...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alert Cards Section -->
+    <div class="alert-cards-section">
+        {% if due_in_one_hour %}
+            {% for task in due_in_one_hour %}
+            <div class="alert-card alert-urgent">
+                <div class="alert-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="alert-content">
+                    <h3>{{ task.title }}</h3>
+                    <p>{{ task.category|capitalize }} task due soon</p>
+                </div>
+                <div class="alert-time">{{ task.minutes_remaining }} min</div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Notifications List Section -->
+    <div class="notifications-section">
+        <div class="section-header">
+            <h2>All Notifications</h2>
+            <span class="notification-count">{{ (due_in_one_hour|length) + (upcoming_tasks|length) }}</span>
+        </div>
+
+        <!-- Due in Next Hour -->
+        {% if due_in_one_hour %}
+        <div class="notification-group">
+            <div class="group-label">
+                <i class="fas fa-hourglass-end"></i> Due Soon (Next Hour)
+            </div>
+            <div class="notifications-list">
+                {% for task in due_in_one_hour %}
+                <div class="notification-item urgent-item">
+                    <div class="notification-accent urgent"></div>
+                    <div class="notification-icon urgent">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="notification-details">
+                        <h4>{{ task.title }}</h4>
+                        <p>{{ task.category|capitalize }} task • Due at {{ task.deadline.strftime('%I:%M %p') }}</p>
+                    </div>
+                    <div class="notification-meta">
+                        <span class="time-label">{{ task.minutes_remaining }} min</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Next 24 Hours -->
+        {% if upcoming_tasks %}
+        <div class="notification-group">
+            <div class="group-label">
+                <i class="fas fa-calendar-alt"></i> Next 24 Hours
+            </div>
+            <div class="notifications-list">
+                {% for task in upcoming_tasks %}
+                <div class="notification-item upcoming-item">
+                    <div class="notification-accent upcoming"></div>
+                    <div class="notification-icon upcoming">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="notification-details">
+                        <h4>{{ task.title }}</h4>
+                        <p>{{ task.deadline_formatted }}</p>
+                    </div>
+                    <div class="notification-meta">
+                        <span class="time-label">{{ task.hours_remaining }}h</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Empty State -->
+        {% if not due_in_one_hour and not upcoming_tasks %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>All caught up!</h3>
+            <p>No urgent tasks or upcoming deadlines. Great work!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Real-time clock and date update
+function updateDateTime() {
+    const now = new Date();
+    
+    // Format time as HH:MM:SS
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const timeString = `${hours}:${minutes}:${seconds}`;
+    
+    // Format date as "Day, Month DD, YYYY"
+    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const dateString = now.toLocaleDateString('en-US', options);
+    
+    // Update both displays
+    const timeElement = document.getElementById('current-time');
+    const dateElement = document.getElementById('current-date');
+    const timeDesktopElement = document.getElementById('current-time-desktop');
+    const dateDesktopElement = document.getElementById('current-date-desktop');
+    
+    if (timeElement) timeElement.textContent = timeString;
+    if (dateElement) dateElement.textContent = dateString;
+    if (timeDesktopElement) timeDesktopElement.textContent = timeString;
+    if (dateDesktopElement) dateDesktopElement.textContent = dateString;
+}
+
+// Update immediately on page load
+updateDateTime();
+
+// Update every second
+setInterval(updateDateTime, 1000);
+</script>
+{% endblock %}

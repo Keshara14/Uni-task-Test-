@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Unitask{% endblock %}
+
+{% block background %}
+    <!-- Animated Time-Themed Background (Dashboard Only) -->
+    <div class="time-bg-container">
+        <div class="time-grid"></div>
+        <div class="time-orbit hour-orbit"></div>
+        <div class="time-orbit minute-orbit"></div>
+        <div class="time-orbit second-orbit"></div>
+        
+        <!-- Rotating SVG Clock Dial (Top-Right) -->
+        <svg class="time-dial-svg primary-dial" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="0.3" stroke-dasharray="1, 4" />
+            <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" stroke-width="0.15" />
+            <circle cx="100" cy="100" r="70" fill="none" stroke="currentColor" stroke-width="0.15" stroke-dasharray="10, 5" />
+            <g stroke="currentColor" stroke-width="0.3">
+                <line x1="100" y1="5" x2="100" y2="12" />
+                <line x1="100" y1="188" x2="100" y2="195" />
+                <line x1="5" y1="100" x2="12" y2="100" />
+                <line x1="188" y1="100" x2="195" y2="100" />
+                
+                <line x1="32.8" y1="61.2" x2="38.8" y2="64.7" />
+                <line x1="167.2" y1="138.8" x2="161.2" y2="135.3" />
+                <line x1="32.8" y1="138.8" x2="38.8" y2="135.3" />
+                <line x1="167.2" y1="61.2" x2="161.2" y2="64.7" />
+            </g>
+        </svg>
+        
+        <!-- Counter-Rotating Inner SVG Clock Gear (Bottom-Left) -->
+        <svg class="time-dial-svg secondary-dial" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="45" fill="none" stroke="currentColor" stroke-width="0.15" stroke-dasharray="3, 3" />
+            <circle cx="100" cy="100" r="30" fill="none" stroke="currentColor" stroke-width="0.3" />
+            <g stroke="currentColor" stroke-width="0.3">
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(0 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(30 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(60 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(90 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(120 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(150 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(180 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(210 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(240 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(270 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(300 100 100)" />
+                <path d="M97 68 h6 v4 h-6 z" transform="rotate(330 100 100)" />
+            </g>
+        </svg>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="welcome-section d-flex justify-content-between align-items-center">
+        <div>
+            <h1>Welcome back, {{ username }}! </h1>
+            <p>Here's what's happening with your academic journey</p>
+        </div>
+        <div class="modern-datetime">
+            <div class="datetime-display">
+                <div class="time" id="current-time">00:00</div>
+                <div class="date" id="current-date">Loading...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Summary Stats -->
+    <div class="row mb-5">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-card total">
+                <i class="fas fa-tasks"></i>
+                <h3>{{ summary.total }}</h3>
+                <p>TOTAL TASKS</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-card completed">
+                <i class="fas fa-check-circle"></i>
+                <h3>{{ summary.completed }}</h3>
+                <p>COMPLETED</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-card pending">
+                <i class="fas fa-clock"></i>
+                <h3>{{ summary.pending }}</h3>
+                <p>PENDING</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-card rate">
+                <i class="fas fa-chart-line"></i>
+                <h3>{{ summary.completion_rate | round(0) }}%</h3>
+                <p>COMPLETION RATE</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: My Tasks - WHITE BACKGROUND SECTION -->
+    <div class="white-bg-section">
+        <div class="container px-4">
+            <div class="d-flex justify-content-between align-items-center mb-5 section-header">
+                <div>
+                    <h2 class="font-weight-700 mb-1" style="font-size: 1.8rem; letter-spacing: -0.5px; color: #0a2349;"><b>My Tasks</b></h2>
+                    <p class="m-0" style="font-size: 0.95rem; color: #636e72;">Review and manage your upcoming assignments.</p>
+                </div>
+                <button class="btn btn-primary px-4 py-2 font-weight-500" style="border-radius: 10px; font-size: 0.95rem;" onclick="showAddTaskModal()">
+                    <i class="fas fa-plus me-2"></i> Add Task
+                </button>
+            </div>
+
+            {% if tasks %}
+            <div id="tasksGrid" class="tasks-grid">
+                {% for task in tasks %}
+                <div class="task-card {% if task.status == 'completed' %}completed-task{% endif %}" data-task-id="{{ task.id }}">
+                    <div class="task-header mb-3">
+                        <h3 class="m-0 font-weight-600" style="font-size: 1.15rem; letter-spacing: -0.3px;">{{ task.title }}</h3>
+                        <span class="task-category category-{{ task.category }} px-3 py-1 text-uppercase font-weight-600">
+                            {{ task.category|capitalize }}
+                        </span>
+                    </div>
+                    <p class="mb-4" style="font-size: 0.9rem; line-height: 1.5; min-height: 40px;">{{ task.description or 'No description provided.' }}</p>
+                    <div class="task-footer pt-3">
+                        <div class="deadline font-weight-500">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ task.deadline.strftime('%b %d, %Y %I:%M %p') if task.deadline else 'No deadline' }}
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn-done" onclick="toggleStatus({{ task.id }}, true)">
+                                <i class="fas fa-check me-1"></i> Done
+                            </button>
+                            <button class="btn-pending" onclick="toggleStatus({{ task.id }}, false)">
+                                <i class="fas fa-clock me-1"></i> Pending
+                            </button>
+                            <button class="delete-btn" onclick="deleteTask({{ task.id }})">
+                                <i class="fas fa-trash me-1"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-tasks p-5 text-center">
+                <i class="fas fa-clipboard-list mb-3" style="font-size: 3.5rem; opacity: 0.4; color: #7a8e9a;"></i>
+                <h4 class="font-weight-600" style="color: #0a2349;">No tasks yet</h4>
+                <p class="mb-0" style="color: #6b7e8a;">Create your first task above and start organizing your academic goals.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Section 2: Task Breakdown -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="mb-5">
+                <h2 class="font-weight-700 mb-1" style="font-size: 1.8rem; letter-spacing: -0.5px; color: #f8fbff;"><b>Task Breakdown</b></h2>
+                <p class="m-0" style="font-size: 0.95rem; color: rgba(255, 255, 255, 0.8);">Visual distribution of your academic tasks by category.</p>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Assignments -->
+                <div class="col-md-3">
+                    <div class="breakdown-box assignment">
+                        <div class="breakdown-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <span class="breakdown-label">Assignments</span>
+                        <div class="breakdown-count">{{ summary.categories.assignment }}</div>
+                    </div>
+                </div>
+                <!-- Exams -->
+                <div class="col-md-3">
+                    <div class="breakdown-box exam">
+                        <div class="breakdown-icon">
+                            <i class="fas fa-file-signature"></i>
+                        </div>
+                        <span class="breakdown-label">Exams</span>
+                        <div class="breakdown-count">{{ summary.categories.exam }}</div>
+                    </div>
+                </div>
+                <!-- Lectures -->
+                <div class="col-md-3">
+                    <div class="breakdown-box lecture">
+                        <div class="breakdown-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <span class="breakdown-label">Lectures</span>
+                        <div class="breakdown-count">{{ summary.categories.lecture }}</div>
+                    </div>
+                </div>
+                <!-- Other -->
+                <div class="col-md-3">
+                    <div class="breakdown-box other">
+                        <div class="breakdown-icon">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <span class="breakdown-label">Other</span>
+                        <div class="breakdown-count">{{ summary.categories.other }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Upcoming Tasks - WHITE BACKGROUND SECTION with no bottom margin -->
+    <div class="white-bg-section mb-0">
+        <div class="container px-4">
+            <div class="mb-5 section-header">
+                <h2 class="font-weight-700 mb-1" style="font-size: 1.8rem; letter-spacing: -0.5px; color: #0a2349;"><b>Upcoming Tasks</b></h2>
+                <p class="m-0" style="font-size: 0.95rem; color: #636e72;">Tasks due in the next 48 hours requiring urgent attention.</p>
+            </div>
+
+            {% if upcoming_tasks %}
+            <div class="upcoming-tasks-list">
+                {% for task in upcoming_tasks %}
+                <div class="upcoming-task-item p-3 mb-3 border-0">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="upcoming-icon-circle">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="m-0 font-weight-600">{{ task.title }}</h4>
+                                <p class="m-0 mt-1">
+                                    <i class="fas fa-calendar-alt me-1" style="color: #d4a574;"></i>
+                                    {{ task.deadline.strftime('%b %d, %Y %I:%M %p') if task.deadline else 'No deadline' }}
+                                </p>
+                            </div>
+                        </div>
+                        <span class="badge bg-primary text-white rounded-pill px-4 py-2 font-weight-600">
+                            <i class="fas fa-hourglass-half me-1"></i> Due Soon
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-upcoming-tasks p-5 text-center">
+                <i class="fas fa-calendar-check mb-3" style="font-size: 3.5rem; opacity: 0.5; color: #52a373;"></i>
+                <h4 class="font-weight-600" style="color: #0a2349;">All Caught Up!</h4>
+                <p class="mb-0" style="color: #6b7e8a;">No urgent academic tasks scheduled in the next 48 hours.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div id="taskModal" class="modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Add New Task</h5>
+                <button type="button" class="btn-close" aria-label="Close" onclick="closeModal()"></button>
+            </div>
+            <form id="taskForm">
+                <input type="hidden" id="taskId" name="taskId">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label for="taskTitle" class="form-label">Task Title</label>
+                        <input type="text" class="form-control" id="taskTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="taskDescription" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="taskCategory" class="form-label">Category</label>
+                            <select class="form-select" id="taskCategory" name="category" required>
+                                <option value="assignment">Assignment</option>
+                                <option value="exam">Exam</option>
+                                <option value="lecture">Lecture</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="taskDeadline" class="form-label">Deadline</label>
+                            <input type="datetime-local" class="form-control" id="taskDeadline" name="deadline" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Real-time clock and date update
+function updateDateTime() {
+    const now = new Date();
+    
+    // Format time as HH:MM:SS
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const timeString = `${hours}:${minutes}:${seconds}`;
+    
+    // Format date as "Day, Month DD, YYYY"
+    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const dateString = now.toLocaleDateString('en-US', options);
+    
+    // Update the DOM
+    document.getElementById('current-time').textContent = timeString;
+    document.getElementById('current-date').textContent = dateString;
+}
+
+// Update immediately on page load
+updateDateTime();
+
+// Update every second
+setInterval(updateDateTime, 1000);
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        try {
+            const response = await fetch('/api/notifications/due-soon');
+            if (!response.ok) return;
+
+            const tasks = await response.json();
+            if (!tasks || tasks.length === 0) return;
+
+            tasks.forEach(task => {
+                const minutes = task.minutes_remaining || 60;
+                const title = task.title || 'Untitled task';
+                showToast(`Reminder: "${title}" is due in ${minutes} minutes.`, 'error');
+            });
+        } catch (error) {
+            console.error('Notification check failed:', error);
+        }
+    });
+</script>
+{% endblock %}
